@@ -1,0 +1,15 @@
+# deps / build
+node_modules
+.next
+out
+*.tsbuildinfo
+next-env.d.ts
+coverage
+# env (키는 .env.local 에만, 커밋 금지)
+.env*
+!.env.example
+# misc
+.DS_Store
+npm-debug.log*
+.vercel
+.claude/worktrees

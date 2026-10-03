@@ -1,0 +1,12 @@
+{
+  "name": "결(結) — AI 명리 코치",
+  "short_name": "결",
+  "description": "내 패턴을 이해하고 선택을 돕는 설명 가능한 AI 명리 코치 (목업)",
+  "lang": "ko",
+  "start_url": "/gyeol-saju-web/",
+  "scope": "/gyeol-saju-web/",
+  "display": "standalone",
+  "background_color": "#faf8f3",
+  "theme_color": "#faf8f3",
+  "icons": [{ "src": "/gyeol-saju-web/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}
