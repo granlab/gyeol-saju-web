@@ -24,6 +24,8 @@ npm run build                # 프로덕션 빌드 확인
 ```
 src/lib/saju/     만세력 엔진 (절기 천문계산, 한국 시간 규칙, 사주 원국·대운·근거 Fact) + 패턴 카드·오늘 규칙
 src/lib/ai/       AI 풀이 (안전 분기, 목업 응답, Claude 호출, 단정 완화)   src/app/api/ask/route.ts
-src/app/          화면: / 온보딩 · /me 나의 결 · /today 오늘의 결 · /ask 묻기 · /settings 설정·데이터
+src/app/          화면: / 온보딩 · /today 홈(오늘의 결·주간) · /me 나의 결 · /ask AI 상담 · /match 궁합(준비 중) · /settings 마이
+src/components/   NightSky(밤하늘 헤더)·AppHeader·ScoreRing·BottomNav(5탭)·ui(카드·버튼·칩)·icons(단일 아이콘 세트)
+docs/screenshots/ 헤드리스 Chrome 390×844 화면 캡처 (UI 개편 기록)
 src/lib/storage.ts  localStorage(gyeol:*) 전용 저장
 ```

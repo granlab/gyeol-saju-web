@@ -28,7 +28,7 @@ function branchKo(b: string) {
 function Glyph({ hanja, ko, element, tenGod }: { hanja: string; ko: string; element: Element; tenGod?: string | null }) {
   return (
     <div className="flex flex-col items-center gap-0.5 py-2">
-      <span className="text-[2rem] font-bold leading-none text-ink" lang="zh-Hant">
+      <span className="font-display text-[2rem] font-bold leading-none text-ink" lang="zh-Hant">
         {hanja}
       </span>
       <span className="flex items-center gap-1 text-sm text-ink-soft">
@@ -43,7 +43,7 @@ function Glyph({ hanja, ko, element, tenGod }: { hanja: string; ko: string; elem
 
 export function PillarTable({ chart }: { chart: SajuChart }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-line bg-white">
+    <div className="overflow-hidden rounded-2xl border border-line bg-paper">
       <table className="w-full table-fixed border-collapse text-center">
         <caption className="sr-only">사주 원국 표: 왼쪽부터 시주, 일주, 월주, 년주</caption>
         <thead>

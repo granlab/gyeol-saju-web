@@ -9,11 +9,14 @@ export type ReadyChart = Extract<ChartState, { status: "ready" }>;
 
 export function LoadingView({ label = "불러오는 중이에요" }: { label?: string }) {
   return (
-    <div className="space-y-4 px-5 py-6" role="status" aria-live="polite">
+    <div role="status" aria-live="polite">
       <span className="sr-only">{label}</span>
-      <div className="h-7 w-40 animate-pulse rounded-lg bg-paper-deep" />
-      <div className="h-36 animate-pulse rounded-3xl bg-paper-deep" />
-      <div className="h-24 animate-pulse rounded-3xl bg-paper-deep" />
+      <div className="bg-night h-36 animate-pulse" />
+      <div className="relative -mt-6 space-y-4 px-5">
+        <div className="h-40 animate-pulse rounded-3xl bg-white/80 shadow-card" />
+        <div className="h-24 animate-pulse rounded-3xl bg-white/80 shadow-card" />
+        <div className="h-24 animate-pulse rounded-3xl bg-white/80 shadow-card" />
+      </div>
     </div>
   );
 }
@@ -21,10 +24,10 @@ export function LoadingView({ label = "불러오는 중이에요" }: { label?: s
 export function ErrorView({ title, message, children }: { title: string; message?: string; children?: ReactNode }) {
   return (
     <div className="px-5 py-6">
-      <Card className="border-caution/30 bg-caution-soft/60" role="alert">
+      <Card className="border-caution/30 bg-caution-soft/70" role="alert">
         <h2 className="text-lg font-bold text-ink">{title}</h2>
         <p className="mt-2 text-base text-ink-soft">
-          입력하신 정보는 그대로 저장되어 있어요. 잠시 후 다시 시도하거나 설정에서 입력값을 확인해 주세요.
+          입력하신 정보는 그대로 저장되어 있어요. 잠시 후 다시 시도하거나 마이에서 입력값을 확인해 주세요.
         </p>
         {message && (
           <details className="mt-3 text-sm text-ink-mute">
@@ -33,7 +36,7 @@ export function ErrorView({ title, message, children }: { title: string; message
           </details>
         )}
         <div className="mt-4 flex flex-wrap gap-2">
-          {children ?? <ButtonLink href="/settings" variant="secondary">설정으로 가기</ButtonLink>}
+          {children ?? <ButtonLink href="/settings" variant="secondary">마이로 가기</ButtonLink>}
         </div>
       </Card>
     </div>

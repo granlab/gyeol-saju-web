@@ -2,9 +2,11 @@
 
 import { useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
+import { AppHeader, Overlap } from "@/components/AppHeader";
 import { LoadingView } from "@/components/ChartGate";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
-import { Button, ButtonLink, Card, Collapsible, PageHeader, SectionTitle, Switch, cx } from "@/components/ui";
+import { IconCalendar, IconClock, IconMapPin, IconShield, IconUser } from "@/components/icons";
+import { Avatar, Button, ButtonLink, Card, Collapsible, SectionTitle, Switch, cx } from "@/components/ui";
 import { useProfile } from "@/lib/hooks/useProfile";
 import { AI_DISCLOSURE, KOREA_HOTLINES } from "@/lib/ai/types";
 import { clearAll, dumpAll, storageSignature, subscribe } from "@/lib/storage";
@@ -21,7 +23,7 @@ function DataDump() {
   const sig = useSyncExternalStore(subscribe, storageSignature, () => "");
   const json = sig ? JSON.stringify(dumpAll(), null, 2) : "";
   return (
-    <pre className="max-h-80 overflow-auto rounded-2xl bg-ink p-4 text-xs leading-relaxed text-paper">
+    <pre className="max-h-80 overflow-auto rounded-2xl bg-night p-4 text-xs leading-relaxed text-night-text">
       {json && json !== "{}" ? json : "저장된 데이터가 없어요."}
     </pre>
   );
@@ -42,27 +44,39 @@ export default function SettingsPage() {
   }
 
   const b = profile?.birth;
+  const name = profile?.nickname.trim() ?? "";
 
   return (
     <>
-      <PageHeader title="설정 · 데이터" sub="내 데이터는 이 브라우저에만 있어요." />
-      <div className="space-y-5 px-5">
+      <AppHeader title="마이" sub="내 데이터는 이 브라우저에만 있어요." />
+      <Overlap>
         <Card>
-          <SectionTitle>프로필</SectionTitle>
           {profile && b ? (
             <>
-              <dl className="grid grid-cols-[5rem_1fr] gap-y-1.5 text-base">
-                <dt className="text-ink-mute">별칭</dt>
-                <dd>{profile.nickname || "(없음)"}</dd>
-                <dt className="text-ink-mute">생년월일</dt>
-                <dd>{b.date} (양력)</dd>
-                <dt className="text-ink-mute">시간</dt>
-                <dd>{b.time ?? "모름 (시주 없이 계산)"}</dd>
-                <dt className="text-ink-mute">출생지</dt>
-                <dd>{b.placeName ?? "서울"}</dd>
-                <dt className="text-ink-mute">성별</dt>
-                <dd>{b.gender ? GENDER_KO[b.gender] : "선택 안 함"}</dd>
-              </dl>
+              <div className="flex items-center gap-4">
+                <Avatar name={name} size="lg" />
+                <div className="min-w-0">
+                  <p className="text-xl font-bold text-ink">{name || "별칭 없음"}</p>
+                  <p className="text-sm text-ink-mute">{b.gender ? GENDER_KO[b.gender] : "성별 선택 안 함"} · 양력</p>
+                </div>
+              </div>
+              <ul className="mt-4 divide-y divide-line rounded-2xl border border-line bg-paper px-4">
+                <li className="flex items-center gap-3 py-3 text-base">
+                  <IconCalendar size={20} className="shrink-0 text-accent-deep" />
+                  <span className="text-ink-mute">생년월일</span>
+                  <span className="ml-auto font-semibold text-ink">{b.date}</span>
+                </li>
+                <li className="flex items-center gap-3 py-3 text-base">
+                  <IconClock size={20} className="shrink-0 text-accent-deep" />
+                  <span className="text-ink-mute">출생 시간</span>
+                  <span className="ml-auto font-semibold text-ink">{b.time ?? "모름 (시주 없이 계산)"}</span>
+                </li>
+                <li className="flex items-center gap-3 py-3 text-base">
+                  <IconMapPin size={20} className="shrink-0 text-accent-deep" />
+                  <span className="text-ink-mute">출생지</span>
+                  <span className="ml-auto font-semibold text-ink">{b.placeName ?? "서울"}</span>
+                </li>
+              </ul>
               <div className="mt-4">
                 <Button variant="secondary" block onClick={() => setDialog("reset")}>
                   다시 입력하기
@@ -70,10 +84,13 @@ export default function SettingsPage() {
               </div>
             </>
           ) : (
-            <div>
-              <p className="text-ink-soft">아직 입력된 정보가 없어요.</p>
-              <div className="mt-3">
-                <ButtonLink href="/">시작하기</ButtonLink>
+            <div className="flex items-center gap-4">
+              <IconUser size={28} className="text-ink-mute" />
+              <div>
+                <p className="text-ink-soft">아직 입력된 정보가 없어요.</p>
+                <div className="mt-3">
+                  <ButtonLink href="/">시작하기</ButtonLink>
+                </div>
               </div>
             </div>
           )}
@@ -87,8 +104,8 @@ export default function SettingsPage() {
               onChange={(v) => {
                 if (!updateProfile({ aiEnabled: v })) setNotice("저장하지 못했어요. 브라우저 저장 공간을 확인해 주세요.");
               }}
-              label="AI 질문 기능"
-              description="켜면 질문할 때 출생 입력(생년월일시·출생지)과 계산 결과, 질문이 이 앱의 서버로 전송돼요(서버는 저장하지 않고 다시 계산만 해요). API 키가 있으면 설명 요청이 Anthropic API 로 나가요. 끄면 묻기 화면이 비활성화돼요."
+              label="AI 상담 기능"
+              description="켜면 질문할 때 출생 입력(생년월일시·출생지)과 계산 결과, 질문이 AI 에 전달돼요(서버는 저장하지 않고 다시 계산만 해요). API 키가 있으면 설명 요청이 Anthropic API 로 나가요. 끄면 AI 상담 화면이 비활성화돼요."
             />
           </Card>
         )}
@@ -103,7 +120,7 @@ export default function SettingsPage() {
                   key={o.value}
                   className={cx(
                     "flex min-h-12 cursor-pointer items-start gap-3 rounded-2xl border px-4 py-3",
-                    settings.dayBoundary === o.value ? "border-accent bg-accent-soft" : "border-line bg-white",
+                    settings.dayBoundary === o.value ? "border-accent/50 bg-accent-soft" : "border-line bg-paper",
                   )}
                 >
                   <input
@@ -148,7 +165,7 @@ export default function SettingsPage() {
         </Card>
 
         <Card>
-          <SectionTitle>고지 · 원칙</SectionTitle>
+          <SectionTitle icon={<IconShield size={16} />}>고지 · 원칙</SectionTitle>
           <div className="space-y-3 text-sm leading-relaxed text-ink-soft">
             <p>
               <b className="text-ink">AI 생성 고지.</b> {AI_DISCLOSURE}
@@ -186,7 +203,7 @@ export default function SettingsPage() {
             </p>
           </div>
         </Card>
-      </div>
+      </Overlap>
 
       <ConfirmDialog
         open={dialog === "reset"}

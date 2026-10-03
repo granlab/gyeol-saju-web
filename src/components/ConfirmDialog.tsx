@@ -46,7 +46,7 @@ export function ConfirmDialog({
       aria-labelledby={titleId}
       onClose={onClose}
       onCancel={onClose}
-      className="m-auto w-[min(92vw,24rem)] rounded-3xl border border-line bg-paper p-0 text-ink shadow-xl"
+      className="m-auto w-[min(92vw,24rem)] rounded-3xl border border-white bg-white p-0 text-ink shadow-float"
     >
       <div className="p-6">
         <h2 id={titleId} className="text-lg font-bold">

@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import type { Fact, PatternCard } from "@/lib/saju/types";
-import { Card, Chip } from "../ui";
+import { IconArrowRight } from "../icons";
+import { Badge, Card, Chip } from "../ui";
 import { WhyChain } from "./WhyChain";
 
 const CATEGORY_KO: Record<PatternCard["category"], string> = {
@@ -40,13 +41,13 @@ export function PatternCardView({ card, facts }: { card: PatternCard; facts: Fac
   return (
     <Card as="article" aria-labelledby={`pc-${card.id}`}>
       <div className="flex items-center justify-between gap-2">
-        <p className="text-sm font-semibold text-ink-soft">
+        <p className="flex items-center gap-2 text-sm font-semibold text-ink-soft">
+          <Badge tone="accent">{CATEGORY_KO[card.category] ?? ""}</Badge>
           {card.title}
-          <span className="ml-2 text-xs font-normal text-ink-mute">{CATEGORY_KO[card.category] ?? ""}</span>
         </p>
         <StrengthDots value={card.strength} />
       </div>
-      <h3 id={`pc-${card.id}`} className="mt-1.5 text-xl font-bold leading-snug text-ink">
+      <h3 id={`pc-${card.id}`} className="mt-2.5 text-xl font-bold leading-snug text-ink">
         {card.headline}
       </h3>
       <p className="mt-2 text-base leading-relaxed text-ink-soft">{card.body}</p>
@@ -62,9 +63,10 @@ export function PatternCardView({ card, facts }: { card: PatternCard; facts: Fac
       <WhyChain why={card.why} facts={facts} />
       <Link
         href={askHrefForPattern(card)}
-        className="mt-1 inline-flex min-h-11 items-center text-base font-semibold text-accent-deep underline-offset-4 hover:underline"
+        className="mt-1 inline-flex min-h-11 items-center gap-1 text-base font-semibold text-accent-deep underline-offset-4 hover:underline"
       >
-        이 패턴에 대해 AI 에게 묻기 →
+        이 패턴에 대해 AI 에게 묻기
+        <IconArrowRight size={18} />
       </Link>
     </Card>
   );

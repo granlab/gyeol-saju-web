@@ -2,7 +2,8 @@
 
 import { useId, useState } from "react";
 import type { Fact } from "@/lib/saju/types";
-import { IconChevron } from "../icons";
+import { IconArrowRight, IconChevron } from "../icons";
+import { cx } from "../ui";
 import { FactChips } from "./FactChips";
 
 export interface WhyData {
@@ -17,7 +18,21 @@ export interface WhyData {
 const FALLBACK_CAVEAT = "전통 명리 관점의 해석이며 확정적 예측이 아닙니다.";
 
 /** '왜?' 버튼 + 4단계 설명 체인 (사주 구조 → 해석 규칙 → 내 맥락 → 제안) */
-export function WhyChain({ why, facts, label = "왜 이렇게 보나요?" }: { why: WhyData; facts: Fact[]; label?: string }) {
+export function WhyChain({
+  why,
+  facts,
+  label = "왜 이렇게 보나요?",
+  pill = false,
+  leading,
+}: {
+  why: WhyData;
+  facts: Fact[];
+  label?: string;
+  /** true 면 오른쪽 정렬 알약 버튼('자세히 보기 →') 스타일 */
+  pill?: boolean;
+  /** pill 모드에서 버튼 왼쪽에 둘 보조 텍스트 */
+  leading?: React.ReactNode;
+}) {
   const [open, setOpen] = useState(false);
   const id = useId();
 
@@ -43,19 +58,38 @@ export function WhyChain({ why, facts, label = "왜 이렇게 보나요?" }: { w
   if (why.suggestion) steps.push({ title: "제안", body: why.suggestion });
 
   return (
-    <div className="mt-4 border-t border-line pt-2">
-      <button
-        type="button"
-        aria-expanded={open}
-        aria-controls={id}
-        onClick={() => setOpen((o) => !o)}
-        className="flex min-h-11 w-full items-center justify-between rounded-xl text-left text-base font-semibold text-accent-deep"
-      >
-        <span>{label}</span>
-        <IconChevron open={open} size={20} />
-      </button>
+    <div className={cx(pill ? "mt-4" : "mt-4 border-t border-line pt-2")}>
+      {pill ? (
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0 text-xs leading-relaxed text-ink-mute">{leading}</div>
+          <button
+            type="button"
+            aria-expanded={open}
+            aria-controls={id}
+            onClick={() => setOpen((o) => !o)}
+            className={cx(
+              "inline-flex min-h-10 shrink-0 items-center gap-1 rounded-full px-4 text-sm font-semibold transition-colors",
+              open ? "bg-accent text-white" : "bg-accent-soft text-accent-deep hover:bg-accent/15",
+            )}
+          >
+            {open ? "접기" : label}
+            {open ? <IconChevron open size={16} /> : <IconArrowRight size={16} />}
+          </button>
+        </div>
+      ) : (
+        <button
+          type="button"
+          aria-expanded={open}
+          aria-controls={id}
+          onClick={() => setOpen((o) => !o)}
+          className="flex min-h-11 w-full items-center justify-between rounded-xl text-left text-base font-semibold text-accent-deep"
+        >
+          <span>{label}</span>
+          <IconChevron open={open} size={20} />
+        </button>
+      )}
       {open && (
-        <div id={id} className="pb-1 pt-1">
+        <div id={id} className={cx("pb-1", pill ? "mt-3 border-t border-line pt-3" : "pt-1")}>
           <ol className="relative space-y-3 border-l-2 border-accent-soft pl-4">
             {steps.map((s, i) => (
               <li key={s.title} className="relative">

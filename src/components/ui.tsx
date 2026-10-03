@@ -8,6 +8,7 @@ export function cx(...xs: Array<string | false | null | undefined>): string {
   return xs.filter(Boolean).join(" ");
 }
 
+/** 둥근 흰 카드 + 부드러운 보라 그림자 */
 export function Card({
   children,
   className,
@@ -19,26 +20,24 @@ export function Card({
   as?: "section" | "div" | "article";
 } & React.HTMLAttributes<HTMLElement>) {
   return (
-    <As
-      className={cx(
-        "rounded-3xl border border-line bg-white/80 p-5 shadow-[0_1px_2px_rgba(31,42,68,0.04)]",
-        className,
-      )}
-      {...rest}
-    >
+    <As className={cx("rounded-3xl border border-white bg-white p-5 shadow-card", className)} {...rest}>
       {children}
     </As>
   );
 }
 
-type BtnVariant = "primary" | "secondary" | "ghost" | "danger";
+type BtnVariant = "primary" | "secondary" | "ghost" | "danger" | "night";
 
 const BTN: Record<BtnVariant, string> = {
-  primary: "bg-accent text-white hover:bg-accent-deep disabled:bg-ink-mute/40",
+  primary: "bg-cta text-white shadow-[0_8px_20px_rgba(109,92,224,0.28)] disabled:shadow-none",
   secondary: "border border-line bg-white text-ink hover:bg-paper-deep disabled:text-ink-mute",
   ghost: "text-accent-deep hover:bg-accent-soft disabled:text-ink-mute",
   danger: "bg-safety text-white hover:brightness-110 disabled:opacity-50",
+  night: "bg-night text-white hover:bg-night-soft disabled:opacity-50",
 };
+
+const BTN_BASE =
+  "inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-2.5 text-base font-semibold transition-colors disabled:cursor-not-allowed";
 
 export function Button({
   variant = "primary",
@@ -46,18 +45,7 @@ export function Button({
   block,
   ...rest
 }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: BtnVariant; block?: boolean }) {
-  return (
-    <button
-      type="button"
-      className={cx(
-        "inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl px-5 py-2.5 text-base font-semibold transition-colors disabled:cursor-not-allowed",
-        BTN[variant],
-        block && "w-full",
-        className,
-      )}
-      {...rest}
-    />
-  );
+  return <button type="button" className={cx(BTN_BASE, BTN[variant], block && "w-full", className)} {...rest} />;
 }
 
 export function ButtonLink({
@@ -74,15 +62,7 @@ export function ButtonLink({
   block?: boolean;
 }) {
   return (
-    <Link
-      href={href}
-      className={cx(
-        "inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl px-5 py-2.5 text-base font-semibold transition-colors",
-        BTN[variant],
-        block && "w-full",
-        className,
-      )}
-    >
+    <Link href={href} className={cx(BTN_BASE, BTN[variant], block && "w-full", className)}>
       {children}
     </Link>
   );
@@ -103,8 +83,8 @@ export function Chip({
 }) {
   const cls = cx(
     "inline-flex min-h-9 items-center rounded-full border px-3 py-1 text-sm",
-    active ? "border-accent bg-accent-soft text-accent-deep" : "border-line bg-paper text-ink-soft",
-    onClick && "hover:border-accent hover:text-accent-deep",
+    active ? "border-accent/50 bg-accent-soft font-semibold text-accent-deep" : "border-line bg-paper text-ink-soft",
+    onClick && "hover:border-accent/50 hover:bg-accent-soft hover:text-accent-deep",
   );
   if (!onClick) return <span className={cls}>{children}</span>;
   return (
@@ -114,36 +94,61 @@ export function Chip({
   );
 }
 
-export function Badge({ children, tone = "neutral" }: { children: ReactNode; tone?: "neutral" | "accent" | "caution" | "safety" }) {
+export function Badge({
+  children,
+  tone = "neutral",
+}: {
+  children: ReactNode;
+  tone?: "neutral" | "accent" | "caution" | "safety" | "gold";
+}) {
   const t = {
     neutral: "bg-paper-deep text-ink-soft",
     accent: "bg-accent-soft text-accent-deep",
     caution: "bg-caution-soft text-caution",
     safety: "bg-safety-soft text-safety",
+    gold: "bg-gold-soft text-caution",
   }[tone];
   return <span className={cx("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold", t)}>{children}</span>;
 }
 
-export function SectionTitle({ children, sub }: { children: ReactNode; sub?: ReactNode }) {
+export function SectionTitle({ children, sub, icon }: { children: ReactNode; sub?: ReactNode; icon?: ReactNode }) {
   return (
     <div className="mb-3">
-      <h2 className="text-lg font-bold text-ink">{children}</h2>
+      <h2 className="flex items-center gap-2 text-lg font-bold text-ink">
+        {icon && (
+          <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-accent-soft text-accent-deep">
+            {icon}
+          </span>
+        )}
+        {children}
+      </h2>
       {sub && <p className="mt-0.5 text-sm text-ink-mute">{sub}</p>}
     </div>
   );
 }
 
-export function PageHeader({ title, sub, right }: { title: ReactNode; sub?: ReactNode; right?: ReactNode }) {
+/** 작은 아이콘 라벨 (카드 제목 왼쪽 등) */
+export function IconBubble({
+  children,
+  tone = "accent",
+  className,
+}: {
+  children: ReactNode;
+  tone?: "accent" | "gold" | "love" | "work" | "mind" | "night";
+  className?: string;
+}) {
+  const t = {
+    accent: "bg-accent-soft text-accent-deep",
+    gold: "bg-gold-soft text-caution",
+    love: "bg-white/70 text-love",
+    work: "bg-white/70 text-work",
+    mind: "bg-white/70 text-mind",
+    night: "bg-white/15 text-white",
+  }[tone];
   return (
-    <header className="pt-safe">
-      <div className="flex items-start justify-between gap-3 px-5 pb-2 pt-6">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-ink">{title}</h1>
-          {sub && <p className="mt-1 text-base text-ink-soft">{sub}</p>}
-        </div>
-        {right}
-      </div>
-    </header>
+    <span className={cx("inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl", t, className)}>
+      {children}
+    </span>
   );
 }
 
@@ -261,4 +266,25 @@ export function Bar({ value, colorClass, label }: { value: number; colorClass: s
       <div className={cx("h-full rounded-full", colorClass)} style={{ width: `${v}%` }} />
     </div>
   );
+}
+
+/** 별칭 첫 글자 아바타 */
+export function Avatar({ name, size = "md" }: { name: string; size?: "md" | "lg" }) {
+  const ch = name.trim().slice(0, 1) || "결";
+  return (
+    <span
+      aria-hidden="true"
+      className={cx(
+        "bg-cta inline-flex shrink-0 items-center justify-center rounded-full font-bold text-white shadow-[0_6px_16px_rgba(109,92,224,0.3)]",
+        size === "lg" ? "h-16 w-16 text-2xl" : "h-11 w-11 text-lg",
+      )}
+    >
+      {ch}
+    </span>
+  );
+}
+
+/** 예정 기능 표시 — 구현 범위 밖 기능은 이 라벨만 붙인다 */
+export function SoonBadge() {
+  return <Badge tone="neutral">준비 중</Badge>;
 }

@@ -1,34 +1,62 @@
 @import "tailwindcss";
 
 /*
- * 결(結) 디자인 토큰 — 신뢰·차분함·설명가능성.
- * 다크모드는 목업 범위에서 생략(라이트 고정).
+ * 결(結) 디자인 토큰 — 라벤더·크림 파스텔 + 짙은 남보라 밤하늘.
+ * 원칙: 신뢰·차분함·설명가능성. 다크모드는 목업 범위에서 생략(라이트 고정).
+ * 모든 본문 텍스트 색은 흰 카드·크림 배경 위에서 WCAG AA(4.5:1) 이상이 되도록 고른다.
  */
 @theme {
-  --color-paper: #faf8f3;
-  --color-paper-deep: #f1ede3;
-  --color-frame: #e7e2d6;
-  --color-ink: #1f2a44;
-  --color-ink-soft: #4a5468;
-  --color-ink-mute: #5d6577;
-  --color-line: #e3ddd0;
-  --color-accent: #1d6b66;
-  --color-accent-deep: #155550;
-  --color-accent-soft: #e3efed;
+  /* 배경 */
+  --color-paper: #f7f4fc;
+  --color-paper-deep: #efeaf8;
+  --color-frame: #e8e2f4;
 
-  --color-wood: #3a8f5c;
-  --color-fire: #d1553a;
-  --color-earth: #c99a3a;
-  --color-metal: #8a8f99;
-  --color-water: #3b6fb6;
+  /* 밤하늘(헤더) */
+  --color-night: #2d2a5e;
+  --color-night-deep: #1e1b45;
+  --color-night-soft: #4d4494;
+  --color-night-text: #cfc8f0;
 
-  --color-safety: #8a2f1d;
-  --color-safety-soft: #fbece7;
-  --color-caution: #6e510f;
-  --color-caution-soft: #f8f0dc;
+  /* 글자 */
+  --color-ink: #2a2650;
+  --color-ink-soft: #524d78;
+  --color-ink-mute: #66618a;
+  --color-line: #e6e0f2;
+
+  /* 포인트(보라) */
+  --color-accent: #6b5ccf;
+  --color-accent-deep: #5346b3;
+  --color-accent-soft: #ece8fb;
+  --color-gold: #e2b35e;
+  --color-gold-soft: #fbf3e2;
+
+  /* 3분할 영역 카드: 관계(핑크)·일(라벤더블루)·나(민트) */
+  --color-love: #b42f62;
+  --color-love-soft: #fde7ef;
+  --color-work: #4a56b5;
+  --color-work-soft: #e9eafb;
+  --color-mind: #256e49;
+  --color-mind-soft: #e4f4ea;
+
+  /* 오행 */
+  --color-wood: #4a9b6a;
+  --color-fire: #e0665a;
+  --color-earth: #d9a441;
+  --color-metal: #8f93a8;
+  --color-water: #4d7fcf;
+
+  /* 안전·주의 */
+  --color-safety: #b0304a;
+  --color-safety-soft: #fdeaee;
+  --color-caution: #8a5a12;
+  --color-caution-soft: #fbf1dc;
 
   --font-sans: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic",
     "Noto Sans KR", sans-serif;
+  --font-display: "Nanum Myeongjo", "AppleMyungjo", "Noto Serif KR", "Apple SD Gothic Neo", serif;
+
+  --shadow-card: 0 10px 28px rgba(72, 54, 140, 0.08), 0 1px 2px rgba(72, 54, 140, 0.05);
+  --shadow-float: 0 14px 36px rgba(72, 54, 140, 0.16), 0 2px 4px rgba(72, 54, 140, 0.06);
 }
 
 html {
@@ -49,7 +77,40 @@ body {
 :focus-visible {
   outline: 3px solid var(--color-accent);
   outline-offset: 2px;
-  border-radius: 6px;
+  border-radius: 8px;
+}
+/* 어두운 헤더 위에서는 흰 포커스 링 */
+.on-night :focus-visible {
+  outline-color: #ffffff;
+}
+
+/* 앱 배경: 크림 라벤더 + 아주 옅은 보라 글로우 */
+.bg-app {
+  background-color: var(--color-paper);
+  background-image:
+    radial-gradient(60% 40% at 100% 0%, rgba(167, 139, 250, 0.1), transparent 70%),
+    radial-gradient(50% 35% at 0% 100%, rgba(244, 164, 196, 0.12), transparent 70%);
+}
+
+/* 그라데이션 CTA (보라 → 라벤더 → 핑크). 흰 글자 대비 4.5:1 이상이 되도록 가장 밝은 구간도 #7d5fd8 이하로 */
+.bg-cta {
+  background-image: linear-gradient(95deg, #5e4dd6 0%, #7d5fd8 55%, #b24f80 100%);
+}
+.bg-cta:hover {
+  filter: brightness(1.04);
+}
+.bg-cta:disabled {
+  background-image: none;
+  background-color: rgba(107, 102, 140, 0.35);
+}
+
+/* 밤하늘 그라데이션 */
+.bg-night {
+  background-image: linear-gradient(180deg, #1e1b45 0%, #2d2a5e 45%, #4d4494 100%);
+}
+
+.font-display {
+  font-family: var(--font-display);
 }
 
 .pt-safe {
@@ -60,14 +121,30 @@ body {
 }
 /* 하단 탭(약 64px) + safe-area 만큼 콘텐츠 여백 */
 .pb-tabbar {
-  padding-bottom: calc(env(safe-area-inset-bottom) + 5.5rem);
+  padding-bottom: calc(env(safe-area-inset-bottom) + 5.75rem);
 }
 .bottom-above-tabbar {
-  bottom: calc(env(safe-area-inset-bottom) + 4rem);
+  bottom: calc(env(safe-area-inset-bottom) + 4.25rem);
 }
 
 dialog::backdrop {
-  background: rgba(31, 42, 68, 0.45);
+  background: rgba(30, 27, 69, 0.5);
+}
+
+/* 네이티브 date/time 입력 — iOS 에서 높이·정렬 통일 */
+input[type="date"],
+input[type="time"] {
+  -webkit-appearance: none;
+  appearance: none;
+  min-height: 3rem;
+}
+input[type="date"]::-webkit-date-and-time-value,
+input[type="time"]::-webkit-date-and-time-value {
+  text-align: left;
+}
+/* 시간 입력은 왼쪽에 우리 아이콘을 두므로 브라우저 기본 시계 아이콘은 숨긴다 */
+input[type="time"]::-webkit-calendar-picker-indicator {
+  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
